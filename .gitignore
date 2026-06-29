@@ -23,3 +23,7 @@ rad.json
 TestResults.xml
 #ode_module 
 node_modules/
+
+.env
+.env.*
+/src/generated/prisma

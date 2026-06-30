@@ -21,7 +21,6 @@ app.use(helmet);
 
 // TODO: routes
 
-// TODO: Error Handler Middleware
 app.use(errorHandler);
 
 app.listen(PORT, () => {

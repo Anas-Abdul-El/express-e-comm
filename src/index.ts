@@ -2,6 +2,7 @@ import e from "express";
 import helmet from "helmet";
 import cors from "cors";
 import dotenv from "dotenv";
+import errorHandler from "./middleware/errorHandler.middleware";
 
 const app = e();
 
@@ -21,6 +22,7 @@ app.use(helmet);
 // TODO: routes
 
 // TODO: Error Handler Middleware
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`the server is running on port: ${PORT}`);

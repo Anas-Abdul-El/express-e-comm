@@ -1,0 +1,1 @@
+{"version":3,"file":"supabase.d.ts","sourceRoot":"","sources":["../../../src/lib/supabase.ts"],"names":[],"mappings":"AASA,UAAU,UAAU;IAClB,IAAI,EAAE,MAAM,CAAC;IACb,WAAW,EAAE,MAAM,CAAC;IACpB,MAAM,EAAE,MAAM,CAAC;CAChB;AAGD,QAAA,MAAM,UAAU,GAAU,+BAA+B,UAAU,gCAWlE,CAAC;AAEF,eAAe,UAAU,CAAC"}

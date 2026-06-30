@@ -11,3 +11,90 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id                         String    @id @default(cuid())
+  name                       String
+  email                      String    @unique
+  password                   String
+  image                      String?
+  isVerified                 Boolean   @default(false)
+  isActive                   Boolean   @default(true)
+  verificationCode           String?
+  verificationCodeExpireAt   DateTime?
+  resetPasswordCode          String?
+  resetPasswordCodeExpireAt  DateTime?
+  session                    Session?
+  cart                       Cart?
+  orders                     Order[]
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  expireAt     DateTime
+  refreshToken String
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String   @unique
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  price       Decimal
+  quantity    Int
+  image       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  category    Category    @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+}
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  products    Product[]
+}
+
+model Cart {
+  id       String     @id @default(cuid())
+  items    CartItem[]
+  user     User       @relation(fields: [userId], references: [id])
+  userId   String     @unique
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  quantity  Int
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  cartId    String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  quantity  Int
+  price     Decimal
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  order     Order    @relation(fields: [orderId], references: [id])
+  orderId   String
+}
+
+model Order {
+  id         String      @id @default(cuid())
+  status     String
+  totalPrice Decimal
+  createdAt  DateTime    @default(now())
+  items      OrderItem[]
+  user       User        @relation(fields: [userId], references: [id])
+  userId     String
+}
+

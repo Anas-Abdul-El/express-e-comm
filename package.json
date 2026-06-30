@@ -8,7 +8,8 @@
     "build": "tsc --build",
     "dev": "nodemon ./src/index.ts",
     "start": "node ./dist/index.js",
-    "seed": "nodemon ./prisma/seed.ts"
+    "seed": "nodemon ./prisma/seed.ts",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
@@ -29,7 +30,8 @@
     "prisma": "^7.8.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.22.4",
-    "typescipt": "^1.0.0"
+    "typescipt": "^1.0.0",
+    "husky": "^8.0.0"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

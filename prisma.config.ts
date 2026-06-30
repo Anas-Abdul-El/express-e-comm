@@ -3,7 +3,7 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
-const env = process.env["DATABASE_URL"] || "not define";
+const env = process.env["DATABASE_URL"] || "undefined";
 
 export default defineConfig({
   schema: "prisma/schema.prisma",

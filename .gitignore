@@ -21,9 +21,11 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
-#ode_module 
+# Node modules
 node_modules/
 
 .env
 .env.*
 /src/generated/prisma
+
+.husky/

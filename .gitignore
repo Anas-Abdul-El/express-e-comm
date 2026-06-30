@@ -29,3 +29,5 @@ node_modules/
 /src/generated/prisma
 
 .husky/
+
+password.txt

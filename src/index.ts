@@ -3,6 +3,7 @@ import helmet from "helmet";
 import cors from "cors";
 import dotenv from "dotenv";
 import errorHandler from "./middleware/errorHandler.middleware";
+import router from "./routes";
 
 const app = e();
 
@@ -17,9 +18,9 @@ app.use(e.json());
 app.use(e.urlencoded());
 
 // adding helmet headers
-app.use(helmet);
+app.use(helmet());
 
-// TODO: routes
+app.use("/api", router);
 
 app.use(errorHandler);
 

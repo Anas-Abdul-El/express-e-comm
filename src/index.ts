@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import errorHandler from "./middleware/errorHandler.middleware";
 import router from "./routes";
+import cookieParser from "cookie-parser";
 
 const app = e();
 
@@ -16,6 +17,7 @@ app.use(cors());
 // parsing
 app.use(e.json());
 app.use(e.urlencoded());
+app.use(cookieParser());
 
 // adding helmet headers
 app.use(helmet());

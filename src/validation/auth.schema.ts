@@ -29,3 +29,22 @@ export const registerSchema = z.object({
  * It can be used to type-check the request body in the registration route handler, ensuring that it adheres to the defined schema.
  */
 export type RegisterSchemaType = z.infer<typeof registerSchema>;
+
+/**
+ * loginSchema defines the validation schema for user login requests.
+ * It ensures that the request body contains a valid email and password.
+ * - email: must be a valid email address.
+ * - password: must be a string with a minimum length of 6 characters.
+ */
+export const loginSchema = z.object({
+  body: z.object({
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters long"),
+  }),
+});
+
+/**
+ * LoginSchemaType is a TypeScript type that infers the shape of the loginSchema.
+ * It can be used to type-check the request body in the login route handler, ensuring that it adheres to the defined schema.
+ */
+export type LoginSchemaType = z.infer<typeof loginSchema>;

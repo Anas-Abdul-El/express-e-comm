@@ -1,30 +1,23 @@
 import jwt from "jsonwebtoken";
 import AppError from "./AppError";
 
+type TokenType = "access" | "refresh" | "verify";
+
 /**
  * generateToken generates a JWT token based on the provided payload and type (access or refresh).
  * @param payload - The payload to include in the token.
  * @param type - The type of token to generate ("access" or "refresh
  */
-export const generateToken = (payload: object, type: "access" | "refresh") => {
+export const generateToken = (payload: object, type: TokenType) => {
   const secretKey =
     type === "access"
       ? process.env.ACCESS_TOKEN_SECRET!
-      : process.env.REFRESH_TOKEN_SECRET!;
+      : type === "refresh"
+        ? process.env.REFRESH_TOKEN_SECRET!
+        : process.env.VERIFICATION_TOKEN_SECRET!;
 
-  const expiresIn = type === "access" ? "1h" : "7d";
+  const expiresIn = type === "access" ? "1h" : type === "refresh" ? "7d" : "1h";
   return jwt.sign(payload, secretKey, { expiresIn });
-};
-
-/**
- * generateVerificationToken generates a JWT token for email verification based on the provided payload.
- * @param payload - The payload to include in the verification token.
- * @returns A JWT token for email verification.
- */
-export const generateVerificationToken = (payload: object) => {
-  return jwt.sign(payload, process.env.VERIFICATION_TOKEN_SECRET!, {
-    expiresIn: "1h",
-  });
 };
 
 /**
@@ -33,11 +26,13 @@ export const generateVerificationToken = (payload: object) => {
  * @param type - The type of token to verify ("access" or "refresh").
  * @returns The decoded payload if the token is valid; otherwise, throws an AppError.
  */
-export const verifyToken = (token: string, type: "access" | "refresh") => {
+export const verifyToken = (token: string, type: TokenType) => {
   const secretKey =
     type === "access"
       ? process.env.ACCESS_TOKEN_SECRET!
-      : process.env.REFRESH_TOKEN_SECRET!;
+      : type === "refresh"
+        ? process.env.REFRESH_TOKEN_SECRET!
+        : process.env.VERIFICATION_TOKEN_SECRET!;
 
   try {
     return jwt.verify(token, secretKey);

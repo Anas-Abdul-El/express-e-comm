@@ -10,7 +10,12 @@
 
 import { Router } from "express";
 import validator from "../middleware/validator.middleware";
-import { loginSchema, registerSchema } from "../validation/auth.schema";
+import {
+  loginSchema,
+  registerSchema,
+  sendVerificationCodeSchema,
+  verifyVerificationCodeSchema,
+} from "../validation/auth.schema";
 import { authController } from "../controllers";
 import catchAsync from "../middleware/catchAsync";
 
@@ -32,5 +37,19 @@ authRouter.post(
 
 // logout route for logout
 authRouter.post("/logout", catchAsync(authController.logout));
+
+// sendVerifyCode route to send a verify token
+authRouter.post(
+  "/sendVerifyCode",
+  validator(sendVerificationCodeSchema),
+  catchAsync(authController.sentVerificationCode),
+);
+
+// verifyVerificationCode route to verify the email send by the sendVerifyCode route
+authRouter.patch(
+  "/verifyVerificationCode",
+  validator(verifyVerificationCodeSchema),
+  catchAsync(authController.verifyVerificationCode),
+);
 
 export default authRouter;

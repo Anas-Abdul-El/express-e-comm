@@ -21,6 +21,7 @@ import {
 import AppError from "../utils/AppError";
 import { createHash, compareHash } from "../utils/hash";
 import transporter from "../lib/nodemailer";
+import { verifyToken } from "../utils/token";
 
 /**
  * registerUser handles the logic for registering a new user.
@@ -126,6 +127,9 @@ export const sendVerificationEmail = async (email: string, token: string) => {
  * @returns A promise that resolves when the email verification process is complete.
  */
 export const verifyEmail = async (token: string) => {
+  const isTokenValid = verifyToken(token, "verify");
+  if (!isTokenValid) throw new AppError("Invalid Token", 400);
+
   const user = await getUserByVerificationToken(token);
   if (!user) throw new AppError("Invalid or expired verification token", 400);
 

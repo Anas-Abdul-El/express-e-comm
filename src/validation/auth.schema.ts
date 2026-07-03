@@ -48,3 +48,15 @@ export const loginSchema = z.object({
  * It can be used to type-check the request body in the login route handler, ensuring that it adheres to the defined schema.
  */
 export type LoginSchemaType = z.infer<typeof loginSchema>;
+
+export const sendVerificationCodeSchema = z.object({
+  body: z.object({
+    email: z.string().email("Invalid email address"),
+  }),
+});
+
+export const verifyVerificationCodeSchema = z.object({
+  body: z.object({
+    token: z.string(),
+  }),
+});

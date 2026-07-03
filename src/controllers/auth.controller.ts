@@ -13,6 +13,8 @@ import type {
 import { User } from "../generated/prisma/client";
 import { generateToken, verifyToken } from "../utils/token";
 import AppError from "../utils/AppError";
+import { saveSessionToken } from "../repositories/user.repo";
+import { verifyEmail } from "../services/auth.service";
 
 /**
  * register handles the user registration process.
@@ -52,6 +54,12 @@ const login = async (
   );
   const refreshToken = generateToken({ userId: user.id }, "refresh");
 
+  await saveSessionToken(
+    user.id,
+    refreshToken,
+    new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  );
+
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -82,4 +90,49 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
   res.status(200).send({ message: "Logged out successfully" });
 };
 
-export { register, login, logout };
+/**
+ * sentVerificationCode handles verifing the acc.
+ * It send a verfication token by email provided by the body.
+ * @param req - The Express request object containing the email in body.
+ * @param res - The Express response object used to send the response.
+ * @param next - The next middleware function in the Express pipeline for error handling.
+ */
+const sentVerificationCode = async (
+  req: Request<{}, {}, { email: string }, {}>,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { email } = req.body;
+
+  const verifyToken = generateToken({ email }, "verify");
+  await authService.sendVerificationEmail(email, verifyToken);
+
+  res.status(200).send({ msg: `code send to email: ${email}` });
+};
+
+/**
+ * verifyVerificationCode handles verifing the acc.
+ * It verifies the verify token provided by the email sent by the previos route
+ * @param req - The Express request object containing the verify token in body.
+ * @param res - The Express response object used to send the response.
+ * @param next - The next middleware function in the Express pipeline for error handling.
+ */
+const verifyVerificationCode = async (
+  req: Request<{}, {}, { token: string }, {}>,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { token } = req.body;
+
+  await verifyEmail(token);
+
+  res.status(200).send({ msg: "account has been verified" });
+};
+
+export {
+  login,
+  logout,
+  register,
+  sentVerificationCode,
+  verifyVerificationCode,
+};

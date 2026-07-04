@@ -40,4 +40,30 @@ export declare const loginSchema: z.ZodObject<{
  * It can be used to type-check the request body in the login route handler, ensuring that it adheres to the defined schema.
  */
 export type LoginSchemaType = z.infer<typeof loginSchema>;
+export declare const sendVerificationCodeSchema: z.ZodObject<{
+    body: z.ZodObject<{
+        email: z.ZodString;
+    }, z.core.$strip>;
+}, z.core.$strip>;
+export type SendVerificationCodeSchemaType = z.infer<typeof sendVerificationCodeSchema>;
+export declare const verifyVerificationCodeSchema: z.ZodObject<{
+    body: z.ZodObject<{
+        token: z.ZodString;
+    }, z.core.$strip>;
+}, z.core.$strip>;
+export type VerifyVerificationCodeSchemaType = z.infer<typeof verifyVerificationCodeSchema>;
+export declare const sendPasswordResetCodeSchema: z.ZodObject<{
+    body: z.ZodObject<{
+        email: z.ZodString;
+    }, z.core.$strip>;
+}, z.core.$strip>;
+export type SendPasswordResetCodeSchemaType = z.infer<typeof sendPasswordResetCodeSchema>;
+export declare const verifyPasswordResetCodeSchema: z.ZodObject<{
+    body: z.ZodObject<{
+        oldPassword: z.ZodString;
+        newPassword: z.ZodString;
+        token: z.ZodString;
+    }, z.core.$strip>;
+}, z.core.$strip>;
+export type VerifyPasswordResetCodeSchemaype = z.infer<typeof verifyPasswordResetCodeSchema>;
 //# sourceMappingURL=auth.schema.d.ts.map

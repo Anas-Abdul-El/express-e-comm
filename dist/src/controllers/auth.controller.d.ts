@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import type { RegisterSchemaType, LoginSchemaType } from "../validation/auth.schema";
+import type { RegisterSchemaType, LoginSchemaType, SendVerificationCodeSchemaType, VerifyVerificationCodeSchemaType, SendPasswordResetCodeSchemaType, VerifyPasswordResetCodeSchemaype } from "../validation/auth.schema";
 import { User } from "../generated/prisma/client";
 /**
  * register handles the user registration process.
@@ -28,5 +28,24 @@ declare const login: (req: Request<{}, {}, LoginSchemaType["body"], {}>, res: Re
  * @param next - The next middleware function in the Express pipeline for error handling.
  */
 declare const logout: (req: Request, res: Response, next: NextFunction) => Promise<void>;
-export { register, login, logout };
+/**
+ * sentVerificationCode handles verifing the acc.
+ * It send a verfication token by email provided by the body.
+ * @param req - The Express request object containing the email in body.
+ * @param res - The Express response object used to send the response.
+ * @param next - The next middleware function in the Express pipeline for error handling.
+ */
+declare const sentVerificationCode: (req: Request<{}, {}, SendVerificationCodeSchemaType["body"], {}>, res: Response, next: NextFunction) => Promise<void>;
+/**
+ * verifyVerificationCode handles verifing the acc.
+ * It verifies the verify token provided by the email sent by the previos route
+ * @param req - The Express request object containing the verify token in body.
+ * @param res - The Express response object used to send the response.
+ * @param next - The next middleware function in the Express pipeline for error handling.
+ */
+declare const verifyVerificationCode: (req: Request<{}, {}, VerifyVerificationCodeSchemaType["body"], {}>, res: Response, next: NextFunction) => Promise<void>;
+declare const sentPasswordResetCode: (req: Request<{}, {}, SendPasswordResetCodeSchemaType["body"], {}>, res: Response, next: NextFunction) => Promise<void>;
+declare const verifyPasswordResetCode: (req: Request<{}, {}, VerifyPasswordResetCodeSchemaype["body"], {}>, res: Response, next: NextFunction) => Promise<void>;
+declare const refreshAccessToken: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+export { login, logout, register, sentVerificationCode, verifyVerificationCode, sentPasswordResetCode, verifyPasswordResetCode, refreshAccessToken, };
 //# sourceMappingURL=auth.controller.d.ts.map

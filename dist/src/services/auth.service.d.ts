@@ -37,4 +37,7 @@ export declare const sendVerificationEmail: (email: string, token: string) => Pr
  * @returns A promise that resolves when the email verification process is complete.
  */
 export declare const verifyEmail: (token: string) => Promise<void>;
+export declare const sendPasswordResetCode: (email: string, token: string) => Promise<void>;
+export declare const verifyPasswordResetCode: (newPassword: string, oldPassword: string, token: string) => Promise<void>;
+export declare const refreshAccessToken: (refreshToken: string) => Promise<string>;
 //# sourceMappingURL=auth.service.d.ts.map

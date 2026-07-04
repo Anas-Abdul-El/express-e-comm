@@ -21,6 +21,21 @@ export const getUserByEmail = async (email: string) => {
   });
 };
 
+export const getUserById = async (userId: string) => {
+  return await db.session.findUnique({
+    where: {
+      userId,
+    },
+    select: {
+      user: {
+        select: {
+          role: true,
+        },
+      },
+      expireAt: true,
+    },
+  });
+};
 type RegisteredUser = RegisterSchemaType["body"];
 /**
  * createUser creates a new user in the database with the provided user information.
@@ -75,10 +90,10 @@ export const deleteToken = async (userId: string) => {
  * @param code - The verification code to be associated with the user.
  * @returns A Promise that resolves to the updated user object with the new verification code.
  */
-export const createVerificationCode = async (userId: string, code: string) => {
+export const createVerificationCode = async (email: string, code: string) => {
   return await db.user.update({
     where: {
-      id: userId,
+      email,
     },
     data: {
       verificationCode: code,
@@ -119,6 +134,36 @@ export const updateUserVerificationStatus = async (
       isVerified,
       verificationCode: null,
       verificationCodeExpiresAt: null,
+    },
+  });
+};
+
+/**
+ * createPasswordResetCode updates the user's record in the database with a new password Reset code.
+ * The code expires 10 minutes after being created.
+ * @param userId - The ID of the user for whom the password Reset code is being created.
+ * @param code - The password Reset code to be associated with the user.
+ * @returns A Promise that resolves to the updated user object with the new verification code.
+ */
+export const createPasswordResetCode = async (email: string, code: string) => {
+  return await db.user.update({
+    where: {
+      email,
+    },
+    data: {
+      resetPasswordCode: code,
+      resetPasswordCodeExpireAt: new Date(Date.now() + 60 * 60 * 24 * 1000),
+    },
+  });
+};
+
+export const updatePassword = async (userId: string, password: string) => {
+  return await db.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      password,
     },
   });
 };

@@ -9,6 +9,10 @@ import { authService } from "../services";
 import type {
   RegisterSchemaType,
   LoginSchemaType,
+  SendVerificationCodeSchemaType,
+  VerifyVerificationCodeSchemaType,
+  SendPasswordResetCodeSchemaType,
+  VerifyPasswordResetCodeSchemaype,
 } from "../validation/auth.schema";
 import { User } from "../generated/prisma/client";
 import { generateToken, verifyToken } from "../utils/token";
@@ -98,7 +102,7 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
  * @param next - The next middleware function in the Express pipeline for error handling.
  */
 const sentVerificationCode = async (
-  req: Request<{}, {}, { email: string }, {}>,
+  req: Request<{}, {}, SendVerificationCodeSchemaType["body"], {}>,
   res: Response,
   next: NextFunction,
 ) => {
@@ -118,7 +122,7 @@ const sentVerificationCode = async (
  * @param next - The next middleware function in the Express pipeline for error handling.
  */
 const verifyVerificationCode = async (
-  req: Request<{}, {}, { token: string }, {}>,
+  req: Request<{}, {}, VerifyVerificationCodeSchemaType["body"], {}>,
   res: Response,
   next: NextFunction,
 ) => {
@@ -129,10 +133,49 @@ const verifyVerificationCode = async (
   res.status(200).send({ msg: "account has been verified" });
 };
 
+const sentPasswordResetCode = async (
+  req: Request<{}, {}, SendPasswordResetCodeSchemaType["body"], {}>,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { email } = req.body;
+  const token = generateToken({ email }, "verify");
+
+  await authService.sendPasswordResetCode(email, token);
+
+  res.status(200).send({ msg: `code send to email: ${email}` });
+};
+
+const verifyPasswordResetCode = async (
+  req: Request<{}, {}, VerifyPasswordResetCodeSchemaype["body"], {}>,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { token, oldPassword, newPassword } = req.body;
+
+  await authService.verifyPasswordResetCode(newPassword, oldPassword, token);
+
+  res.status(200).send({ msg: "password has been reset" });
+};
+
+const refreshAccessToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const refreshToken = req.cookies.refreshToken;
+  const newToken = await authService.refreshAccessToken(refreshToken);
+
+  res.json({ accessToken: newToken });
+};
+
 export {
   login,
   logout,
   register,
   sentVerificationCode,
   verifyVerificationCode,
+  sentPasswordResetCode,
+  verifyPasswordResetCode,
+  refreshAccessToken,
 };

@@ -55,8 +55,42 @@ export const sendVerificationCodeSchema = z.object({
   }),
 });
 
+export type SendVerificationCodeSchemaType = z.infer<
+  typeof sendVerificationCodeSchema
+>;
+
 export const verifyVerificationCodeSchema = z.object({
   body: z.object({
     token: z.string(),
   }),
 });
+
+export type VerifyVerificationCodeSchemaType = z.infer<
+  typeof verifyVerificationCodeSchema
+>;
+
+export const sendPasswordResetCodeSchema = z.object({
+  body: z.object({
+    email: z.string().email("Invalid email address"),
+  }),
+});
+
+export type SendPasswordResetCodeSchemaType = z.infer<
+  typeof sendPasswordResetCodeSchema
+>;
+
+export const verifyPasswordResetCodeSchema = z.object({
+  body: z.object({
+    oldPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters long"),
+    newPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters long"),
+    token: z.string(),
+  }),
+});
+
+export type VerifyPasswordResetCodeSchemaype = z.infer<
+  typeof verifyPasswordResetCodeSchema
+>;

@@ -13,7 +13,9 @@ import validator from "../middleware/validator.middleware";
 import {
   loginSchema,
   registerSchema,
+  sendPasswordResetCodeSchema,
   sendVerificationCodeSchema,
+  verifyPasswordResetCodeSchema,
   verifyVerificationCodeSchema,
 } from "../validation/auth.schema";
 import { authController } from "../controllers";
@@ -38,18 +40,35 @@ authRouter.post(
 // logout route for logout
 authRouter.post("/logout", catchAsync(authController.logout));
 
+// refresh router to refresh the access token
+authRouter.post("/refresh", catchAsync(authController.refreshAccessToken));
+
 // sendVerifyCode route to send a verify token
 authRouter.post(
-  "/sendVerifyCode",
+  "/sendVerificationCode",
   validator(sendVerificationCodeSchema),
   catchAsync(authController.sentVerificationCode),
 );
 
 // verifyVerificationCode route to verify the email send by the sendVerifyCode route
-authRouter.patch(
+authRouter.post(
   "/verifyVerificationCode",
   validator(verifyVerificationCodeSchema),
   catchAsync(authController.verifyVerificationCode),
+);
+
+// sendPasswordresetCode route to send a reset password token
+authRouter.post(
+  "/sendPasswordresetCode",
+  validator(sendPasswordResetCodeSchema),
+  catchAsync(authController.sentPasswordResetCode),
+);
+
+// verifyVerificationCode route to verify the email send by the sendPasswordresetCode route
+authRouter.post(
+  "/verifyPasswordresetCode",
+  validator(verifyPasswordResetCodeSchema),
+  catchAsync(authController.verifyPasswordResetCode),
 );
 
 export default authRouter;

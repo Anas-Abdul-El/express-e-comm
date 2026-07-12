@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
 import AppError from "../utils/AppError";
 import { verifyToken } from "../utils/token";
+import { NextFunction, Request, Response } from "express";
 
 const authHandler =
   (privacy: "public" | "private") =>

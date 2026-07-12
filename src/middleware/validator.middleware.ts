@@ -1,5 +1,6 @@
 import zod from "zod";
 import { Request, Response, NextFunction } from "express";
+import { da } from "zod/locales";
 
 /**
  * validator is a middleware function that validates incoming request data against a specified Zod schema.
@@ -10,8 +11,11 @@ import { Request, Response, NextFunction } from "express";
  * @param schema - A Zod schema object used for validating the request data.
  * @returns An Express middleware function that performs validation on the request data.
  */
+
+type ValidationType = "body" | "query" | "params";
+
 const validator =
-  (schema: zod.ZodObject) =>
+  (schema: zod.ZodObject, type: ValidationType) =>
   (req: Request, res: Response, next: NextFunction) => {
     const { data, error } = schema.safeParse(req);
 
@@ -24,7 +28,8 @@ const validator =
       });
     }
 
-    req.body = data["body"];
+    if (type == "body") req.body = data["body"];
+
     next();
   };
 

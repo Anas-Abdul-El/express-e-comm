@@ -26,14 +26,14 @@ const authRouter: Router = Router();
 // register route for registration
 authRouter.post(
   "/register",
-  validator(registerSchema),
+  validator(registerSchema, "body"),
   catchAsync(authController.register),
 );
 
 // login route for login
 authRouter.post(
   "/login",
-  validator(loginSchema),
+  validator(loginSchema, "body"),
   catchAsync(authController.login),
 );
 
@@ -46,28 +46,28 @@ authRouter.post("/refresh", catchAsync(authController.refreshAccessToken));
 // sendVerifyCode route to send a verify token
 authRouter.post(
   "/sendVerificationCode",
-  validator(sendVerificationCodeSchema),
+  validator(sendVerificationCodeSchema, "body"),
   catchAsync(authController.sentVerificationCode),
 );
 
 // verifyVerificationCode route to verify the email send by the sendVerifyCode route
 authRouter.post(
   "/verifyVerificationCode",
-  validator(verifyVerificationCodeSchema),
+  validator(verifyVerificationCodeSchema, "body"),
   catchAsync(authController.verifyVerificationCode),
 );
 
 // sendPasswordresetCode route to send a reset password token
 authRouter.post(
   "/sendPasswordresetCode",
-  validator(sendPasswordResetCodeSchema),
+  validator(sendPasswordResetCodeSchema, "body"),
   catchAsync(authController.sentPasswordResetCode),
 );
 
 // verifyVerificationCode route to verify the email send by the sendPasswordresetCode route
 authRouter.post(
   "/verifyPasswordresetCode",
-  validator(verifyPasswordResetCodeSchema),
+  validator(verifyPasswordResetCodeSchema, "body"),
   catchAsync(authController.verifyPasswordResetCode),
 );
 

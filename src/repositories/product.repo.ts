@@ -3,16 +3,9 @@ import {
   ProductWhereInput,
 } from "../generated/prisma/models";
 import { db } from "../lib/prisma";
+import { productFilterSchemaType } from "../validation/product.schema";
 
-export type ProductFilter = {
-  category?: string;
-  priceMin?: number;
-  priceMax?: number;
-  sort?: "price" | "createdAt";
-  order?: "asc" | "desc";
-};
-
-export const getAllProduct = async (filters: ProductFilter) => {
+export const getAllProduct = async (filters: productFilterSchemaType) => {
   const {
     category,
     priceMin,
@@ -48,5 +41,22 @@ export const getAllProduct = async (filters: ProductFilter) => {
   return db.product.findMany({
     where,
     orderBy,
+  });
+};
+
+export const getProductById = async (id: string) => {
+  const product = await db.product.findUnique({
+    where: {
+      id,
+    },
+  });
+  return product;
+};
+
+export const deleteProduct = async (id: string) => {
+  await db.product.delete({
+    where: {
+      id,
+    },
   });
 };

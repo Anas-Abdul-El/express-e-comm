@@ -31,3 +31,5 @@ node_modules/
 .husky/
 
 password.txt
+
+/src/session.ai/

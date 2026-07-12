@@ -6,18 +6,32 @@
 //
 
 import { Category, Product } from "../generated/prisma/client";
-import {
-  getAllProduct,
-  type ProductFilter,
-} from "../repositories/product.repo";
+import { getAllProduct, getProductById } from "../repositories/product.repo";
 import AppError from "../utils/AppError";
+import { productFilterSchemaType } from "../validation/product.schema";
 
 export const products = async (
-  filter: ProductFilter,
+  filter: productFilterSchemaType,
 ): Promise<Array<Product & Category>> => {
   const allProducts = await getAllProduct(filter);
 
   if (allProducts.length === 0) throw new AppError("there is no products", 204);
 
-  return {} as Array<Product & Category>;
+  return allProducts;
+};
+
+export const oneProduct = async (id: string): Promise<Product> => {
+  const product = await getProductById(id);
+
+  if (!product) throw new AppError("product not found", 404);
+
+  return product;
+};
+
+export const deleteProduct = async (id: string) => {
+  try {
+    await deleteProduct(id);
+  } catch {
+    throw new AppError("something error while deleting the product", 500);
+  }
 };

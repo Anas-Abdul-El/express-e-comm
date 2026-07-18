@@ -53,6 +53,31 @@ export const getProductById = async (id: string) => {
   return product;
 };
 
+interface Product {
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  image: string | undefined;
+  categoryId: string;
+}
+
+export const createProduct = async (product: Product) => {
+  const { name, description, price, quantity, image, categoryId } = product;
+  const dataImage = image ? image : null;
+
+  await db.product.create({
+    data: {
+      name,
+      description,
+      price,
+      quantity,
+      image: dataImage,
+      categoryId,
+    },
+  });
+};
+
 export const deleteProduct = async (id: string) => {
   await db.product.delete({
     where: {

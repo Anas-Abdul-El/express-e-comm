@@ -29,7 +29,32 @@ export type productFilterSchemaType = z.infer<
 >["query"];
 
 export const productIdSchema = z.object({
-  params: {
+  params: z.object({
     id: z.string(),
-  },
+  }),
 });
+
+// interface Product {
+//   name: string;
+//   description: string;
+//   price: number;
+//   quantity: number;
+//   image: string;
+//   categoryId: string;
+// }
+
+export const createProductSchema = z.object({
+  body: z.object({
+    name: z.string({ message: "the name must be a string" }),
+    description: z.string({ message: "the description must be a string" }),
+    price: z.coerce
+      .number({ message: "price should be a numbere" })
+      .positive({ message: "the price should be positive value" }),
+    quantity: z.coerce
+      .number({ message: "price should be a numbere" })
+      .positive({ message: "the price should be positive value" }),
+    categoryId: z.string({ message: "the categoryId must be a string" }),
+  }),
+});
+
+export type createProductSchemaType = z.infer<typeof createProductSchema>;

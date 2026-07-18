@@ -1,5 +1,5 @@
 interface UploadFile {
-    file: string;
+    file: Buffer;
     contentType: string;
     folder: string;
 }

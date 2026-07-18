@@ -3,12 +3,12 @@ import { createClient } from "@supabase/supabase-js";
 // Create Supabase client
 const supabase = createClient(
   process.env.SUPABASE_URL!,
-  process.env.ACCESS_KEY!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
 // types of args
 interface UploadFile {
-  file: string;
+  file: Buffer;
   contentType: string;
   folder: string;
 }

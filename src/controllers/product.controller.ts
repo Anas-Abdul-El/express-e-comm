@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { productService } from "../services";
-import { productFilterSchemaType } from "../validation/product.schema";
+import uploadFile from "../lib/supabase";
 
 const getAllProducts = async (
   req: Request,
@@ -23,6 +23,19 @@ const getProductById = async (
   res.status(200).send(product);
 };
 
+const createProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { file, body } = req;
+  console.log(req.file);
+
+  await productService.AddProduct(body, file);
+
+  res.sendStatus(200);
+};
+
 const deleteProduct = async (
   req: Request,
   res: Response,
@@ -35,4 +48,4 @@ const deleteProduct = async (
   res.status(200).send("deleted succ");
 };
 
-export { getAllProducts, getProductById, deleteProduct };
+export { getAllProducts, getProductById, deleteProduct, createProduct };

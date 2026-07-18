@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc --build",
-    "dev": "nodemon --trace-warnings ./src/index.ts",
+    "dev": "nodemon ./src/index.ts",
     "start": "node ./dist/index.js",
     "seed": "nodemon ./prisma/seed.ts",
     "prepare": "husky install"

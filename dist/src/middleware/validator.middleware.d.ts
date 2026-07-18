@@ -9,6 +9,7 @@ import { Request, Response, NextFunction } from "express";
  * @param schema - A Zod schema object used for validating the request data.
  * @returns An Express middleware function that performs validation on the request data.
  */
-declare const validator: (schema: zod.ZodObject) => (req: Request, res: Response, next: NextFunction) => Response<any, Record<string, any>> | undefined;
+type ValidationType = "body" | "query" | "params";
+declare const validator: (schema: zod.ZodObject, type: ValidationType) => (req: Request, res: Response, next: NextFunction) => Response<any, Record<string, any>> | undefined;
 export default validator;
 //# sourceMappingURL=validator.middleware.d.ts.map

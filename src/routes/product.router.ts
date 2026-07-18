@@ -1,12 +1,14 @@
-import { Router } from "express";
 import authHandler from "../middleware/authHandler.middleware";
 import catchAsync from "../middleware/catchAsync";
-import { productController } from "../controllers";
 import validator from "../middleware/validator.middleware";
+import { Router } from "express";
+import { productController } from "../controllers";
 import {
+  createProductSchema,
   productFilterSchema,
   productIdSchema,
 } from "../validation/product.schema";
+import upload from "../lib/multer";
 
 const router: Router = Router();
 
@@ -25,19 +27,20 @@ router.get(
 );
 
 // edit the product that have this id (admin only)
-router.patch(
-  "/edit/:id",
-  authHandler("private"),
-  validator(productIdSchema, "params"),
-  catchAsync,
-);
+// router.patch(
+//   "/edit/:id",
+//   authHandler("private"),
+//   validator(productIdSchema, "params"),
+//   catchAsync,
+// );
 
 // add the product that have this id (admin only)
 router.post(
-  "/add/:id",
-  authHandler("private"),
-  validator(productIdSchema, "params"),
-  catchAsync,
+  "/add",
+  upload.single("product-image"),
+  // authHandler("private"),
+  validator(createProductSchema, "body"),
+  catchAsync(productController.createProduct),
 );
 
 // delete the product that have this id (admin only)

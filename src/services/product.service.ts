@@ -7,7 +7,7 @@
 
 import { Category, Product } from "../generated/prisma/client";
 import { db } from "../lib/prisma";
-import uploadFile from "../lib/supabase";
+import uploadFile, { supabase } from "../lib/supabase";
 import {
   createProduct,
   getAllProduct,
@@ -49,27 +49,23 @@ export const AddProduct = async (
   body: createProductSchemaType["body"],
   file: Express.Multer.File | undefined,
 ) => {
-  await db.$transaction(async () => {
-    let image;
-    try {
-      if (file) {
-        image = await uploadFile({
-          file: file.buffer,
-          contentType: file.mimetype,
-          folder: `products/${file.originalname}`,
-        });
-      }
-    } catch {
-      throw new AppError("something went wrong while parsing the image", 500);
+  let image;
+  try {
+    if (file) {
+      image = await uploadFile({
+        file: file.buffer,
+        contentType: file.mimetype,
+        folder: `products/${file.originalname}`,
+      });
     }
+  } catch {
+    throw new AppError("something went wrong while parsing the image", 500);
+  }
 
-    try {
-      await createProduct({ ...body, image });
-    } catch {
-      throw new AppError(
-        "something went wrong while creating the product",
-        500,
-      );
-    }
-  });
+  try {
+    await createProduct({ ...body, image });
+  } catch {
+    if (image) await supabase.storage.from("e-comm").remove([image]);
+    throw new AppError("something went wrong while creating the product", 500);
+  }
 };

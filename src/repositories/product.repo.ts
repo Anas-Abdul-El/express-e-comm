@@ -5,12 +5,16 @@
 // It interacts with the database to perform CRUD operations on product data, such as retrieving, creating, and deleting products.
 //
 
+import { Product } from "../generated/prisma/client";
 import {
   ProductOrderByWithRelationInput,
   ProductWhereInput,
 } from "../generated/prisma/models";
 import { db } from "../lib/prisma";
-import { ProductFilterSchemaType } from "../validation/product.schema";
+import {
+  EditProductSchemaType,
+  ProductFilterSchemaType,
+} from "../validation/product.schema";
 
 /**
  * getAllProduct retrieves all products from the database based on the provided filter criteria.
@@ -71,7 +75,7 @@ export const getProductById = async (id: string) => {
   return product;
 };
 
-interface Product {
+interface ProductType {
   name: string;
   description: string;
   price: number;
@@ -85,7 +89,7 @@ interface Product {
  * @param product - An object containing the product's information, including name, description, price, quantity, image, and category.
  * @returns A Promise that resolves to the newly created product object.
  */
-export const createProduct = async (product: Product) => {
+export const createProduct = async (product: ProductType) => {
   const { name, description, price, quantity, image, categoryId } = product;
   const dataImage = image ? image : null;
 
@@ -110,6 +114,22 @@ export const deleteProduct = async (id: string) => {
   await db.product.delete({
     where: {
       id,
+    },
+  });
+};
+
+export const updateProduct = async (product: Product) => {
+  const { name, description, price, quantity, categoryId, image, id } = product;
+
+  await db.product.update({
+    where: { id },
+    data: {
+      name,
+      description,
+      price,
+      quantity,
+      image,
+      categoryId,
     },
   });
 };

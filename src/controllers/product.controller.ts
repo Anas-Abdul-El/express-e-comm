@@ -89,11 +89,17 @@ const deleteProduct = async (
  * @param res - The Express response object used to send the response.
  * @param next - The next middleware function in the Express pipeline for error handling.
  */
-const editProduct = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {};
+const editProduct = async (req: Request, res: Response, next: NextFunction) => {
+  const {
+    params: { id },
+    body,
+    file,
+  } = req;
+  const productId = id as string;
+  await productService.editProduct(productId, body, file);
+
+  res.send("edited succ");
+};
 
 export {
   getAllProducts,

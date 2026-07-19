@@ -5,16 +5,19 @@
 // It includes functions for retrieving all products, retrieving a single product by ID, creating, editing, and deleting products.
 //
 
+import { Decimal } from "@prisma/client/runtime/client";
 import { Product } from "../generated/prisma/client";
 import uploadFile, { supabase } from "../lib/supabase";
 import {
   createProduct,
   getAllProduct,
   getProductById,
+  updateProduct,
 } from "../repositories/product.repo";
 import AppError from "../utils/AppError";
 import {
   CreateProductSchemaType,
+  EditProductSchemaType,
   ProductFilterSchemaType,
 } from "../validation/product.schema";
 
@@ -117,6 +120,50 @@ export const AddProduct = async (
     await createProduct({ ...body, image });
   } catch {
     if (image) await supabase.storage.from("e-comm").remove([image]);
+    throw new AppError("something went wrong while creating the product", 500);
+  }
+};
+
+interface EditProductBodyType {
+  name?: string;
+  description?: string;
+  price?: Decimal;
+  quantity?: number;
+  categoryId?: string;
+}
+
+export const editProduct = async (
+  id: string,
+  body: EditProductBodyType,
+  file: Express.Multer.File | undefined,
+) => {
+  let image;
+  try {
+    if (file) {
+      image = await uploadFile({
+        file: file.buffer,
+        contentType: file.mimetype,
+        folder: `products/${file.originalname}`,
+      });
+    }
+  } catch {
+    throw new AppError("something went wrong while parsing the image", 500);
+  }
+
+  let oldProduct: Product | null;
+  try {
+    oldProduct = await getProductById(id);
+    if (!oldProduct) throw new AppError("the product not found", 400);
+  } catch (error) {
+    throw new AppError("something went wrong", 500);
+  }
+
+  try {
+    const newProduct = { ...oldProduct, ...body };
+    await updateProduct(newProduct);
+    if (image && oldProduct.image)
+      await supabase.storage.from("e-comm").remove([oldProduct.image]);
+  } catch {
     throw new AppError("something went wrong while creating the product", 500);
   }
 };

@@ -42,6 +42,8 @@ router.get(
 // PATCH /products/edit/:id - Edit an existing product (admin only)
 router.patch(
   "/edit/:id",
+  authHandler("private"),
+  upload.single("product-image"),
   validator(productIdSchema, "params"),
   validator(editProductSchema, "body"),
   catchAsync(productController.editProduct),
@@ -50,8 +52,8 @@ router.patch(
 // POST /products/add - Create a new product (admin only)
 router.post(
   "/add",
-  upload.single("product-image"),
   authHandler("private"),
+  upload.single("product-image"),
   validator(createProductSchema, "body"),
   catchAsync(productController.createProduct),
 );

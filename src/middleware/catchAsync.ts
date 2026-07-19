@@ -1,3 +1,10 @@
+//
+// catchAsync.ts
+//
+// This file defines a utility middleware for handling asynchronous route handlers in Express.
+// It wraps asynchronous functions to catch any errors and pass them to the error handling middleware.
+//
+
 import { Request, Response, NextFunction } from "express";
 
 /**

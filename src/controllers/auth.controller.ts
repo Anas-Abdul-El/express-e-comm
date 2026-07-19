@@ -12,7 +12,7 @@ import type {
   SendVerificationCodeSchemaType,
   VerifyVerificationCodeSchemaType,
   SendPasswordResetCodeSchemaType,
-  VerifyPasswordResetCodeSchemaype,
+  VerifyPasswordResetCodeSchemaType,
 } from "../validation/auth.schema";
 import { User } from "../generated/prisma/client";
 import { generateToken, verifyToken } from "../utils/token";
@@ -147,7 +147,7 @@ const sentPasswordResetCode = async (
 };
 
 const verifyPasswordResetCode = async (
-  req: Request<{}, {}, VerifyPasswordResetCodeSchemaype["body"], {}>,
+  req: Request<{}, {}, VerifyPasswordResetCodeSchemaType["body"], {}>,
   res: Response,
   next: NextFunction,
 ) => {

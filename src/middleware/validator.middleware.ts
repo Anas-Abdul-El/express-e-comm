@@ -1,6 +1,12 @@
+//
+// validator.middleware.ts
+//
+// This file defines a validation middleware for the application.
+// It uses Zod schemas to validate incoming request data against specified schemas.
+//
+
 import zod from "zod";
 import { Request, Response, NextFunction } from "express";
-import { da } from "zod/locales";
 
 /**
  * validator is a middleware function that validates incoming request data against a specified Zod schema.

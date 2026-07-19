@@ -1,7 +1,21 @@
+//
+// authHandler.middleware.ts
+//
+// This file defines the authentication middleware for the application.
+// It verifies JWT tokens from the Authorization header and checks user roles to protect routes.
+//
+
 import AppError from "../utils/AppError";
 import { verifyToken } from "../utils/token";
 import { NextFunction, Request, Response } from "express";
 
+/**
+ * authHandler is a middleware factory that returns an authentication middleware.
+ * It verifies the JWT access token from the Authorization header and checks the user's role
+ * to determine if they have access to the route.
+ * @param privacy - A string indicating the access level: "public" allows any authenticated user, "private" restricts to admin users only.
+ * @returns An Express middleware function that authenticates and authorizes requests.
+ */
 const authHandler =
   (privacy: "public" | "private") =>
   (req: Request, res: Response, next: NextFunction) => {

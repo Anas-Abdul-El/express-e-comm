@@ -1,10 +1,22 @@
+//
+// errorHandler.middleware.ts
+//
+// This file defines the global error handling middleware for the application.
+// It handles various types of errors including Zod validation errors, operational AppErrors, and unexpected errors.
+//
+
 import { Request, Response, NextFunction } from "express";
 import AppError from "../utils/AppError";
 import { ZodError } from "zod";
 
-/***
- * A middleware to handle errors
- * @returns A middleware function
+/**
+ * errorHandler is a global error handling middleware for Express.
+ * It catches and handles different types of errors: Zod validation errors, operational AppErrors, and unexpected server errors.
+ * @param err - The error object thrown by the application.
+ * @param req - The Express request object.
+ * @param res - The Express response object used to send the error response.
+ * @param next - The next middleware function (not used in error handlers).
+ * @returns A response with the appropriate status code and error message.
  */
 const errorHandler = (
   err: Error,

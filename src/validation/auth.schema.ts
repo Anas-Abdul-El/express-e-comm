@@ -91,6 +91,6 @@ export const verifyPasswordResetCodeSchema = z.object({
   }),
 });
 
-export type VerifyPasswordResetCodeSchemaype = z.infer<
+export type VerifyPasswordResetCodeSchemaType = z.infer<
   typeof verifyPasswordResetCodeSchema
 >;

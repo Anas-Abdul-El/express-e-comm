@@ -2,11 +2,10 @@
 // product.service.ts
 //
 // This file defines the product service for the application.
-// It includes functions for get all product, one of them based on its id, edit, and delete.
+// It includes functions for retrieving all products, retrieving a single product by ID, creating, editing, and deleting products.
 //
 
-import { Category, Product } from "../generated/prisma/client";
-import { db } from "../lib/prisma";
+import { Product } from "../generated/prisma/client";
 import uploadFile, { supabase } from "../lib/supabase";
 import {
   createProduct,
@@ -15,28 +14,73 @@ import {
 } from "../repositories/product.repo";
 import AppError from "../utils/AppError";
 import {
-  createProductSchemaType,
-  productFilterSchemaType,
+  CreateProductSchemaType,
+  ProductFilterSchemaType,
 } from "../validation/product.schema";
 
+/**
+ * products retrieves all products from the database based on the provided filter criteria.
+ * It constructs public URLs for product images stored in Supabase storage.
+ * @param filter - The filter criteria including category, price range, and sorting options.
+ * @returns A promise that resolves to an array of Product objects with image URLs.
+ */
 export const products = async (
-  filter: productFilterSchemaType,
-): Promise<Array<Product & Category>> => {
-  const allProducts = await getAllProduct(filter);
+  filter: ProductFilterSchemaType,
+): Promise<Array<Product>> => {
+  const products = await getAllProduct(filter);
 
-  if (allProducts.length === 0) throw new AppError("there is no products", 204);
+  if (products.length === 0) throw new AppError("there is no products", 204);
+
+  const allProducts = products.map((ele, i) => {
+    let image: string | null = null;
+
+    if (ele.image) {
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("e-comm").getPublicUrl(ele.image);
+      image = publicUrl;
+    }
+
+    return {
+      ...ele,
+      image,
+    };
+  });
 
   return allProducts;
 };
 
+/**
+ * oneProduct retrieves a single product from the database by its ID.
+ * It constructs a public URL for the product image if it exists.
+ * @param id - The ID of the product to retrieve.
+ * @returns A promise that resolves to a Product object with the image URL.
+ */
 export const oneProduct = async (id: string): Promise<Product> => {
   const product = await getProductById(id);
 
   if (!product) throw new AppError("product not found", 404);
 
-  return product;
+  let image: string | null = null;
+  if (product.image) {
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("e-comm").getPublicUrl(product.image);
+    image = publicUrl;
+  }
+
+  return {
+    ...product,
+    image,
+  };
 };
 
+/**
+ * deleteProduct removes a product from the database by its ID.
+ * It deletes the product record from the database.
+ * @param id - The ID of the product to delete.
+ * @returns A promise that resolves when the deletion is complete.
+ */
 export const deleteProduct = async (id: string) => {
   try {
     await deleteProduct(id);
@@ -45,8 +89,15 @@ export const deleteProduct = async (id: string) => {
   }
 };
 
+/**
+ * AddProduct creates a new product in the database.
+ * It handles file upload to Supabase storage and creates the product record.
+ * @param body - The product data including name, description, price, quantity, and category.
+ * @param file - An optional image file to upload for the product.
+ * @returns A promise that resolves when the product is created.
+ */
 export const AddProduct = async (
-  body: createProductSchemaType["body"],
+  body: CreateProductSchemaType["body"],
   file: Express.Multer.File | undefined,
 ) => {
   let image;
